@@ -43,8 +43,7 @@ impl Command {
             let tile = world.get_tile(want_x, want_y);
             if tile.food >= 255 {
                 255
-            }
-            else {
+            } else {
                 tile.food as u8
             }
         };
@@ -63,8 +62,7 @@ impl Command {
             let tile = world.get_tile(want_x, want_y);
             if tile.creature == None {
                 0
-            }
-            else {
+            } else {
                 255
             }
         };
@@ -125,9 +123,8 @@ impl Command {
             // Kills it
             stats.energy += victim.stats.energy;
             tile.creature = None;
-            creatures.deallocate(id_victim);    
-        }
-        else {
+            creatures.deallocate(id_victim);
+        } else {
             victim.stats.energy -= 50;
             stats.energy += 50;
         }

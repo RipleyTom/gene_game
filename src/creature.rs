@@ -69,6 +69,15 @@ impl Creature {
         self.stats.id.clone()
     }
 
+    pub fn is_carnivorous(&self) -> bool {
+        for gene in &self.genes {
+            if let Command::Attack = gene {
+                return true;
+            }
+        }
+        false
+    }
+
     pub fn adjust_pos(
         world: &World,
         (pos_x, pos_y): (u32, u32),
@@ -111,8 +120,7 @@ impl Creature {
             cur_tile.creature = None;
             cmap.deallocate(self.stats.id.clone());
             false
-        }
-        else {
+        } else {
             true
         }
     }

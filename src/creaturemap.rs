@@ -119,10 +119,7 @@ impl CreatureMap {
 
     pub fn add_creature(&mut self, x: u32, y: u32, gene: Vec<Command>) -> CreatureId {
         let id = self.allocate();
-        self.set_creature(
-            id.clone(),
-            Creature::new(id.clone(), x, y, gene),
-        );
+        self.set_creature(id.clone(), Creature::new(id.clone(), x, y, gene));
         id
     }
 }
