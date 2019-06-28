@@ -35,7 +35,7 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
         let mut canvas = window
             .into_canvas()
             .target_texture()
-            .present_vsync()
+//            .present_vsync()
             .build()
             .unwrap();
 
