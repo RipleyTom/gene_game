@@ -12,15 +12,16 @@ use rand::Rng;
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
+use sdl2::mouse::MouseButton;
 use sdl2::render::TextureCreator;
 use sdl2::Sdl;
+
 struct Game<'ctx, 'texture> {
     world: World,
     creatures: CreatureMap,
     pub gfx: Renderer<'ctx, 'texture>,
     round: u32,
 }
-
 impl<'ctx, 'texture> Game<'ctx, 'texture> {
     pub fn new(width: u32, height: u32, num_creatures: u32, sdl_ctx: &Sdl) -> Game {
 
@@ -57,6 +58,26 @@ impl<'ctx, 'texture> Game<'ctx, 'texture> {
 
     pub fn update_gfx(&mut self) {
         self.gfx.update(&self.world, &self.creatures);
+    }
+
+    pub fn display_tile_info(&self, x: i32, y: i32) {
+        let (world_w, world_h) = self.world.get_size();
+
+        if x < 0 || x >= world_w as i32 || y < 0 || y >= world_h as i32 {
+            return;
+        }
+
+        let x = x as u32;
+        let y = y as u32;
+
+        let tile = self.world.get_tile(x, y);
+
+        println!("X: {} Y: {}", x, y);
+        println!("{}", tile);
+        if let Some(c) = &tile.creature {
+            let creat = self.creatures.get_creature(c.clone()).unwrap();
+            println!("{}", creat);
+        }
     }
 
     pub fn simulate(&mut self) -> bool {
@@ -109,12 +130,15 @@ fn main() {
         g.init(&tex_creat);
         g.update_gfx();
 
-        'running: loop {
-            if !g.simulate() {
-                break 'running;
-            }
+        let mut paused = false;
 
-            g.update_gfx();
+        'running: loop {
+            if !paused {
+                if !g.simulate() {
+                    break 'running;
+                }
+                g.update_gfx();
+            }
 
             for event in event_pump.poll_iter() {
                 match event {
@@ -123,6 +147,20 @@ fn main() {
                         keycode: Some(Keycode::Escape),
                         ..
                     } => break 'running,
+                    Event::KeyDown {
+                        keycode: Some(Keycode::Space),
+                        ..
+                    } => {
+                        paused = !paused;
+                    }
+                    Event::MouseButtonDown {
+                        mouse_btn: MouseButton::Left,
+                        x,
+                        y,
+                        ..
+                    } => {
+                        g.display_tile_info(x, y);
+                    }
                     _ => {}
                 }
             }

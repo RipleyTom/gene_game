@@ -3,7 +3,10 @@ pub mod command;
 use crate::creaturemap::{CreatureId, CreatureMap};
 use crate::world::World;
 use command::Command;
+
 use rand::Rng;
+
+use std::fmt;
 
 #[derive(Clone)]
 pub enum CreatureType {
@@ -11,6 +14,20 @@ pub enum CreatureType {
     Carnivore,
     Omnivore,
 }
+impl fmt::Display for CreatureType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                CreatureType::Herbivore => "Herbivore",
+                CreatureType::Carnivore => "Carnivore",
+                CreatureType::Omnivore => "Omnivore",
+            }
+        )
+    }
+}
+
 
 #[derive(Clone)]
 pub struct CreatureStats {
@@ -49,6 +66,16 @@ impl CreatureStats {
         (x_move, y_move)
     }
 }
+impl fmt::Display for CreatureStats {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "Energy: {} E: {} W: {} N: {} S: {}",
+            self.energy, self.e, self.w, self.n, self.s
+        )
+    }
+}
+
 
 #[derive(Clone)]
 pub struct Creature {
@@ -149,3 +176,18 @@ impl Creature {
         }
     }
 }
+impl fmt::Display for Creature {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "==Creature==\n")?;
+
+        write!(f, "Type: {}\n", self.ctype)?;
+        write!(f, "Stats: {}\n", self.stats)?;
+        write!(f, "Genes({}):\n", self.genes.len())?;
+
+        for gene in &self.genes {
+            write!(f, "{}\n", gene)?;
+        }
+        write!(f, "============")
+    }
+}
+

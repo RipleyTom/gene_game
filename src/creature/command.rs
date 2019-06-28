@@ -2,9 +2,15 @@
 use crate::creature::{Creature, CreatureStats};
 use crate::creaturemap::CreatureMap;
 use crate::world::World;
+
 use num_derive::FromPrimitive;
 use num_traits::FromPrimitive;
 use rand::Rng;
+
+use std::fmt;
+
+const NUM_COMMANDS: u32 = 8;
+
 #[derive(Clone, FromPrimitive)]
 pub enum Command {
     Nop = 0,
@@ -13,9 +19,28 @@ pub enum Command {
     Move,
     Eat,
     Attack,
-    Invert,
     Reproduce,
+    Invert,
 }
+impl fmt::Display for Command {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Command::Nop => "Nop",
+                Command::LookForFood => "LookForFood",
+                Command::LookForCreature => "LookForCreature",
+                Command::Move => "Move",
+                Command::Eat => "Eat",
+                Command::Attack => "Attack",
+                Command::Reproduce => "Reproduce",
+                Command::Invert => "Invert",
+            }
+        )
+    }
+}
+
 
 impl Command {
     pub fn execute(
@@ -117,16 +142,18 @@ impl Command {
             return;
         }
 
+        const ENERGY_TAKEN: u32 = 20;
+
         let id_victim = tile.creature.clone().unwrap();
         let victim = creatures.get_creature_mut(id_victim.clone()).unwrap();
-        if victim.stats.energy < 50 {
+        if victim.stats.energy < ENERGY_TAKEN {
             // Kills it
             stats.energy += victim.stats.energy;
             tile.creature = None;
             creatures.deallocate(id_victim);
         } else {
-            victim.stats.energy -= 50;
-            stats.energy += 50;
+            victim.stats.energy -= ENERGY_TAKEN;
+            stats.energy += ENERGY_TAKEN;
         }
     }
 
@@ -155,7 +182,7 @@ impl Command {
         const NEWGENECHANCE: u32 = 1;
 
         if rand::thread_rng().gen_range(0, 100) < MUTATIONCHANCE {
-            let new_command = rand::thread_rng().gen_range(0, 8);
+            let new_command = rand::thread_rng().gen_range(0, NUM_COMMANDS);
 
             let newdiceroll = rand::thread_rng().gen_range(0, 100);
             if new_genes.len() < 16 && newdiceroll < NEWGENECHANCE {

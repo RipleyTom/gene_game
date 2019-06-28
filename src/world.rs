@@ -1,5 +1,7 @@
 use crate::creaturemap::CreatureId;
 
+use std::fmt;
+
 pub struct World {
     width: u32,
     height: u32,
@@ -10,6 +12,12 @@ pub struct World {
 pub struct Tile {
     pub food: u32,
     pub creature: Option<CreatureId>,
+}
+
+impl fmt::Display for Tile {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Food: {}", self.food)
+    }
 }
 
 impl World {
