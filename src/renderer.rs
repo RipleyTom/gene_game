@@ -73,20 +73,20 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
             .as_mut()
             .unwrap()
             .with_lock(None, |buffer: &mut [u8], _pitch: usize| {
-                for y in 0..s_x {
-                    for x in 0..s_y {
+                for y in 0..s_y {
+                    for x in 0..s_x {
                         let tile = world.get_tile(x, y);
                         if let None = tile.creature {
-                            buffer[((y * s_y) + x) as usize * 4] = 255;
-                            buffer[(((y * s_y) + x) as usize * 4) + 1] = {
+                            buffer[((y * s_x) + x) as usize * 4] = 255;
+                            buffer[(((y * s_x) + x) as usize * 4) + 1] = {
                                 if tile.food >= 255 {
                                     255
                                 } else {
                                     tile.food as u8
                                 }
                             };
-                            buffer[(((y * s_y) + x) as usize * 4) + 2] = 0;
-                            buffer[(((y * s_y) + x) as usize * 4) + 3] = 0;
+                            buffer[(((y * s_x) + x) as usize * 4) + 2] = 0;
+                            buffer[(((y * s_x) + x) as usize * 4) + 3] = 0;
                         } else {
                             let c = creatures
                                 .get_creature(tile.creature.clone().unwrap())
@@ -110,10 +110,10 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
                                 }
                             }
 
-                            buffer[((y * s_y) + x) as usize * 4] = 255;
-                            buffer[(((y * s_y) + x) as usize * 4) + 1] = b;
-                            buffer[(((y * s_y) + x) as usize * 4) + 2] = g;
-                            buffer[(((y * s_y) + x) as usize * 4) + 3] = r;
+                            buffer[((y * s_x) + x) as usize * 4] = 255;
+                            buffer[(((y * s_x) + x) as usize * 4) + 1] = b;
+                            buffer[(((y * s_x) + x) as usize * 4) + 2] = g;
+                            buffer[(((y * s_x) + x) as usize * 4) + 3] = r;
 
                         }
                     }

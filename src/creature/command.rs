@@ -88,16 +88,24 @@ impl Command {
             if tile.creature == None {
                 0
             } else {
-                255
+                1
             }
         };
 
         let (x, y) = (stats.pos_x, stats.pos_y);
 
-        stats.e = update_for_dir(x, y, 1, 0);
-        stats.w = update_for_dir(x, y, -1, 0);
-        stats.n = update_for_dir(x, y, 0, -1);
-        stats.s = update_for_dir(x, y, 0, 1);
+        if stats.e != 255 {
+            stats.e += update_for_dir(x, y, 1, 0);
+        }
+        if stats.w != 255 {
+            stats.w += update_for_dir(x, y, -1, 0);
+        }
+        if stats.n != 255 {
+            stats.n += update_for_dir(x, y, 0, -1);
+        }
+        if stats.s != 255 {
+            stats.s += update_for_dir(x, y, 0, 1);
+        }
     }
 
     fn c_move(world: &mut World, stats: &mut CreatureStats) {

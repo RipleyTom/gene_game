@@ -120,7 +120,7 @@ fn main() {
     let mut event_pump = sdl_context.event_pump().unwrap();
 
     {
-        let mut g = Game::new(1000, 1000, 500, &sdl_context);
+        let mut g = Game::new(600, 500, 500, &sdl_context);
         let main_canvas = g.gfx.get_canvas();
 
         // TextureCreator had to be made outside of the scope of Game as it's borrowed for the lifetime of Texture
