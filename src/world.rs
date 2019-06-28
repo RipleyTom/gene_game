@@ -46,4 +46,14 @@ impl World {
     pub fn get_tile_mut(&mut self, x: u32, y: u32) -> &mut Tile {
         &mut self.map[((y * self.width) + x) as usize]
     }
+
+    pub fn get_num_creatures(&self) -> u32 {
+        let mut nc = 0;
+        for tile in &self.map {
+            if let Some(_) = tile.creature {
+                nc += 1;
+            }
+        }
+        nc
+    }
 }

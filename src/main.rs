@@ -93,6 +93,9 @@ impl<'ctx, 'texture> Game<'ctx, 'texture> {
             self.round,
             active_creatures.len()
         );
+
+        debug_assert_eq!(active_creatures.len() as u32, self.world.get_num_creatures() as u32);
+
         if active_creatures.len() == 0 {
             println!("Every creature died at round {}", self.round);
             return false;
