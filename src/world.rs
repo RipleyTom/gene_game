@@ -40,10 +40,10 @@ impl World {
     }
 
     pub fn get_tile(&self, x: u32, y: u32) -> &Tile {
-        &self.map[((y * self.height) + x) as usize]
+        &self.map[((y * self.width) + x) as usize]
     }
 
     pub fn get_tile_mut(&mut self, x: u32, y: u32) -> &mut Tile {
-        &mut self.map[((y * self.height) + x) as usize]
+        &mut self.map[((y * self.width) + x) as usize]
     }
 }

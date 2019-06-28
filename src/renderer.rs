@@ -10,8 +10,8 @@ use sdl2::render::TextureCreator;
 use sdl2::Sdl;
 
 pub struct Renderer<'ctx, 'texture> {
-    size_x: u32,
-    size_y: u32,
+    width: u32,
+    height: u32,
 
     sdl_ctx: &'ctx Sdl,
     vid: sdl2::VideoSubsystem,
@@ -22,10 +22,10 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
     pub fn new(sdl_ctx: &'ctx Sdl, world: &World) -> Renderer<'ctx, 'texture> {
 
         let video_subsystem = sdl_ctx.video().unwrap();
-        let (size_x, size_y) = world.get_size();
+        let (width, height) = world.get_size();
 
         let window = video_subsystem
-            .window("Gene Game", size_x, size_y)
+            .window("Gene Game", width, height)
             .position_centered()
             .build()
             .unwrap();
@@ -42,8 +42,8 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
         canvas.present();
 
         Renderer {
-            size_x: size_x,
-            size_y: size_y,
+            width: width,
+            height: height,
             sdl_ctx: sdl_ctx,
             vid: video_subsystem,
             canvas: canvas,
@@ -58,35 +58,33 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
     pub fn init(&mut self, texture_creator: &'texture TextureCreator<sdl2::video::WindowContext>) {
         self.texture = Some(
             texture_creator
-                .create_texture_streaming(PixelFormatEnum::RGBA8888, self.size_x, self.size_y)
+                .create_texture_streaming(PixelFormatEnum::RGBA8888, self.width, self.height)
                 .map_err(|e| e.to_string())
                 .unwrap(),
         );
     }
 
     pub fn update(&mut self, world: &World, creatures: &CreatureMap) {
-        let tex = &self.texture;
-
-        let (s_x, s_y) = (self.size_x, self.size_y);
+        let (width, height) = (self.width, self.height);
 
         self.texture
             .as_mut()
             .unwrap()
-            .with_lock(None, |buffer: &mut [u8], _pitch: usize| {
-                for y in 0..s_y {
-                    for x in 0..s_x {
+            .with_lock(None, |buffer: &mut [u8], pitch: usize| {
+                for y in 0..height {
+                    for x in 0..width {
                         let tile = world.get_tile(x, y);
                         if let None = tile.creature {
-                            buffer[((y * s_x) + x) as usize * 4] = 255;
-                            buffer[(((y * s_x) + x) as usize * 4) + 1] = {
+                            buffer[((y * width) + x) as usize * 4] = 255;
+                            buffer[(((y * width) + x) as usize * 4) + 1] = {
                                 if tile.food >= 255 {
                                     255
                                 } else {
                                     tile.food as u8
                                 }
                             };
-                            buffer[(((y * s_x) + x) as usize * 4) + 2] = 0;
-                            buffer[(((y * s_x) + x) as usize * 4) + 3] = 0;
+                            buffer[(((y * width) + x) as usize * 4) + 2] = 0;
+                            buffer[(((y * width) + x) as usize * 4) + 3] = 0;
                         } else {
                             let c = creatures
                                 .get_creature(tile.creature.clone().unwrap())
@@ -110,10 +108,10 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
                                 }
                             }
 
-                            buffer[((y * s_x) + x) as usize * 4] = 255;
-                            buffer[(((y * s_x) + x) as usize * 4) + 1] = b;
-                            buffer[(((y * s_x) + x) as usize * 4) + 2] = g;
-                            buffer[(((y * s_x) + x) as usize * 4) + 3] = r;
+                            buffer[((y * width) + x) as usize * 4] = 255;
+                            buffer[(((y * width) + x) as usize * 4) + 1] = b;
+                            buffer[(((y * width) + x) as usize * 4) + 2] = g;
+                            buffer[(((y * width) + x) as usize * 4) + 3] = r;
 
                         }
                     }
@@ -121,7 +119,7 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
             })
             .unwrap();
 
-        let rect = Rect::new(0, 0, s_x, s_y);
+        let rect = Rect::new(0, 0, width, height);
         self.canvas
             .copy(self.texture.as_ref().unwrap(), None, Some(rect))
             .unwrap();
