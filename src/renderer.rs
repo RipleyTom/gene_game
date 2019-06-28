@@ -3,12 +3,10 @@ use crate::creature::CreatureType;
 use crate::creaturemap::CreatureMap;
 use crate::world::World;
 
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::pixels::PixelFormatEnum;
 use sdl2::rect::Rect;
-use sdl2::render::{BlendMode, TextureCreator};
+use sdl2::render::TextureCreator;
 use sdl2::Sdl;
 
 pub struct Renderer<'ctx, 'texture> {
@@ -35,7 +33,7 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
         let mut canvas = window
             .into_canvas()
             .target_texture()
-//            .present_vsync()
+            //            .present_vsync()
             .build()
             .unwrap();
 
@@ -96,20 +94,20 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
                             let (r, g, b): (u8, u8, u8);
                             match c.get_type() {
                                 CreatureType::Carnivore => {
-                                r = 255;
-                                g = 0;
-                                b = 0;
-                                },
+                                    r = 255;
+                                    g = 0;
+                                    b = 0;
+                                }
                                 CreatureType::Herbivore => {
-                                r = 0;
-                                g = 255;
-                                b = 0;
-                                },
+                                    r = 0;
+                                    g = 255;
+                                    b = 0;
+                                }
                                 CreatureType::Omnivore => {
                                     r = 255;
                                     g = 255;
                                     b = 0;
-                                },
+                                }
                             }
 
                             buffer[((y * s_y) + x) as usize * 4] = 255;

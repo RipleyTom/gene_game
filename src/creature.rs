@@ -63,19 +63,16 @@ impl Creature {
             for gene in &genes {
                 if let Command::Eat = gene {
                     eat_found = true;
-                }
-                else if let Command::Attack = gene {
+                } else if let Command::Attack = gene {
                     attack_found = true;
                 }
             }
 
             if eat_found && attack_found {
                 CreatureType::Omnivore
-            }
-            else if attack_found {
+            } else if attack_found {
                 CreatureType::Carnivore
-            }
-            else {
+            } else {
                 CreatureType::Herbivore
             }
         };
