@@ -88,24 +88,16 @@ impl Command {
             if tile.creature == None {
                 0
             } else {
-                1
+                255
             }
         };
 
         let (x, y) = (stats.pos_x, stats.pos_y);
 
-        if stats.e != 255 {
-            stats.e += update_for_dir(x, y, 1, 0);
-        }
-        if stats.w != 255 {
-            stats.w += update_for_dir(x, y, -1, 0);
-        }
-        if stats.n != 255 {
-            stats.n += update_for_dir(x, y, 0, -1);
-        }
-        if stats.s != 255 {
-            stats.s += update_for_dir(x, y, 0, 1);
-        }
+        stats.e = update_for_dir(x, y, 1, 0);
+        stats.w = update_for_dir(x, y, -1, 0);
+        stats.n = update_for_dir(x, y, 0, -1);
+        stats.s = update_for_dir(x, y, 0, 1);
     }
 
     fn c_move(world: &mut World, stats: &mut CreatureStats) {
@@ -131,9 +123,11 @@ impl Command {
             return;
         }
 
-        if tile.food >= 10 {
-            stats.energy += 10;
-            tile.food -= 10;
+        const FOOD_TAKEN: u32 = 10;
+
+        if tile.food >= FOOD_TAKEN {
+            stats.energy += FOOD_TAKEN;
+            tile.food -= FOOD_TAKEN;
         } else {
             stats.energy += tile.food;
             tile.food = 0;
@@ -154,7 +148,7 @@ impl Command {
 
         let id_victim = tile.creature.clone().unwrap();
         let victim = creatures.get_creature_mut(id_victim.clone()).unwrap();
-        if victim.stats.energy < ENERGY_TAKEN {
+        if victim.stats.energy <= ENERGY_TAKEN {
             // Kills it
             stats.energy += victim.stats.energy;
             tile.creature = None;

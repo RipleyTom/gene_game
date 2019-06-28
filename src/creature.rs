@@ -163,15 +163,22 @@ impl Creature {
 
         let cur_tile = world.get_tile_mut(self.stats.pos_x, self.stats.pos_y);
 
-        self.stats.energy -= 1;
-        cur_tile.food += 1;
+        let energy_loss: u32 = match &self.ctype {
+            CreatureType::Herbivore => 1,
+            CreatureType::Carnivore => 5,
+            CreatureType::Omnivore => 10,
+        };
 
-        if self.stats.energy == 0 {
+        if self.stats.energy <= energy_loss {
+            cur_tile.food += self.stats.energy;
+            self.stats.energy = 0;
             // Death by starvation
             cur_tile.creature = None;
             cmap.deallocate(self.stats.id.clone());
             false
         } else {
+            cur_tile.food += energy_loss;
+            self.stats.energy -= energy_loss;
             true
         }
     }
