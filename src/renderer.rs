@@ -1,5 +1,5 @@
 
-use crate::creature::Creature;
+use crate::creature::CreatureType;
 use crate::creaturemap::CreatureMap;
 use crate::world::World;
 
@@ -94,14 +94,22 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
                                 .get_creature(tile.creature.clone().unwrap())
                                 .unwrap();
                             let (r, g, b): (u8, u8, u8);
-                            if c.is_carnivorous() {
+                            match c.get_type() {
+                                CreatureType::Carnivore => {
                                 r = 255;
                                 g = 0;
                                 b = 0;
-                            } else {
+                                },
+                                CreatureType::Herbivore => {
                                 r = 0;
                                 g = 255;
                                 b = 0;
+                                },
+                                CreatureType::Omnivore => {
+                                    r = 255;
+                                    g = 255;
+                                    b = 0;
+                                },
                             }
 
                             buffer[((y * s_y) + x) as usize * 4] = 255;

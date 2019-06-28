@@ -6,6 +6,13 @@ use command::Command;
 use rand::Rng;
 
 #[derive(Clone)]
+pub enum CreatureType {
+    Herbivore,
+    Carnivore,
+    Omnivore,
+}
+
+#[derive(Clone)]
 pub struct CreatureStats {
     id: CreatureId,
     pos_x: u32,
@@ -47,9 +54,33 @@ impl CreatureStats {
 pub struct Creature {
     stats: CreatureStats,
     genes: Vec<Command>,
+    ctype: CreatureType,
 }
 impl Creature {
     pub fn new(id: CreatureId, x: u32, y: u32, genes: Vec<Command>) -> Creature {
+        let ctype = {
+            let (mut eat_found, mut attack_found) = (false, false);
+            for gene in &genes {
+                if let Command::Eat = gene {
+                    eat_found = true;
+                }
+                else if let Command::Attack = gene {
+                    attack_found = true;
+                }
+            }
+
+            if eat_found && attack_found {
+                CreatureType::Omnivore
+            }
+            else if attack_found {
+                CreatureType::Carnivore
+            }
+            else {
+                CreatureType::Herbivore
+            }
+        };
+
+
         Creature {
             stats: CreatureStats {
                 id: id.clone(),
@@ -62,6 +93,7 @@ impl Creature {
                 s: 128,
             },
             genes: genes,
+            ctype: ctype,
         }
     }
 
@@ -69,13 +101,8 @@ impl Creature {
         self.stats.id.clone()
     }
 
-    pub fn is_carnivorous(&self) -> bool {
-        for gene in &self.genes {
-            if let Command::Attack = gene {
-                return true;
-            }
-        }
-        false
+    pub fn get_type(&self) -> CreatureType {
+        self.ctype.clone()
     }
 
     pub fn adjust_pos(
