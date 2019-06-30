@@ -25,8 +25,8 @@ pub struct CreatureMap {
 impl CreatureMap {
     pub fn new() -> CreatureMap {
         CreatureMap {
-            map: Vec::new(),
-            free: Vec::new(),
+            map: Vec::with_capacity(250000),
+            free: Vec::with_capacity(250000),
         }
     }
 
