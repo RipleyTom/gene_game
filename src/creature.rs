@@ -82,6 +82,7 @@ pub struct Creature {
     stats: CreatureStats,
     genes: Vec<Command>,
     ctype: CreatureType,
+    energy_loss: u32,
 }
 impl Creature {
     pub fn new(id: CreatureId, x: u32, y: u32, genes: Vec<Command>) -> Creature {
@@ -104,6 +105,11 @@ impl Creature {
             }
         };
 
+        let energy_loss = match ctype {
+            CreatureType::Herbivore => 1,
+            CreatureType::Carnivore => 5,
+            CreatureType::Omnivore => 10,
+        };
 
         Creature {
             stats: CreatureStats {
@@ -118,6 +124,7 @@ impl Creature {
             },
             genes: genes,
             ctype: ctype,
+            energy_loss: energy_loss,
         }
     }
 
@@ -163,13 +170,7 @@ impl Creature {
 
         let cur_tile = world.get_tile_mut(self.stats.pos_x, self.stats.pos_y);
 
-        let energy_loss: u32 = match &self.ctype {
-            CreatureType::Herbivore => 1,
-            CreatureType::Carnivore => 5,
-            CreatureType::Omnivore => 10,
-        };
-
-        if self.stats.energy <= energy_loss {
+        if self.stats.energy <= self.energy_loss {
             cur_tile.food += self.stats.energy;
             self.stats.energy = 0;
             // Death by starvation
@@ -177,8 +178,8 @@ impl Creature {
             cmap.deallocate(self.stats.id.clone());
             false
         } else {
-            cur_tile.food += energy_loss;
-            self.stats.energy -= energy_loss;
+            cur_tile.food += self.energy_loss;
+            self.stats.energy -= self.energy_loss;
             true
         }
     }
