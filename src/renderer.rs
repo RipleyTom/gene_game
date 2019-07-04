@@ -9,17 +9,17 @@ use sdl2::rect::Rect;
 use sdl2::render::TextureCreator;
 use sdl2::Sdl;
 
-pub struct Renderer<'ctx, 'texture> {
+pub struct Renderer<'texture> {
     width: u32,
     height: u32,
 
-    sdl_ctx: &'ctx Sdl,
-    vid: sdl2::VideoSubsystem,
+    // sdl_ctx: &'ctx Sdl,
+    // vid: sdl2::VideoSubsystem,
     canvas: sdl2::render::Canvas<sdl2::video::Window>,
     texture: Option<sdl2::render::Texture<'texture>>,
 }
-impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
-    pub fn new(sdl_ctx: &'ctx Sdl, world: &World) -> Renderer<'ctx, 'texture> {
+impl<'ctx, 'texture> Renderer<'texture> {
+    pub fn new(sdl_ctx: &'ctx Sdl, world: &World) -> Renderer<'texture> {
 
         let video_subsystem = sdl_ctx.video().unwrap();
         let (width, height) = world.get_size();
@@ -44,8 +44,8 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
         Renderer {
             width: width,
             height: height,
-            sdl_ctx: sdl_ctx,
-            vid: video_subsystem,
+            // sdl_ctx: sdl_ctx,
+            // vid: video_subsystem,
             canvas: canvas,
             texture: None,
         }
@@ -70,7 +70,7 @@ impl<'ctx, 'texture> Renderer<'ctx, 'texture> {
         self.texture
             .as_mut()
             .unwrap()
-            .with_lock(None, |buffer: &mut [u8], pitch: usize| {
+            .with_lock(None, |buffer: &mut [u8], _pitch: usize| {
                 for y in 0..height {
                     for x in 0..width {
                         let tile = world.get_tile(x, y);

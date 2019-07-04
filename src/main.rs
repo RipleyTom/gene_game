@@ -16,13 +16,13 @@ use sdl2::mouse::MouseButton;
 use sdl2::render::TextureCreator;
 use sdl2::Sdl;
 
-struct Game<'ctx, 'texture> {
+struct Game<'texture> {
     world: World,
     creatures: CreatureMap,
-    pub gfx: Renderer<'ctx, 'texture>,
+    pub gfx: Renderer<'texture>,
     round: u32,
 }
-impl<'ctx, 'texture> Game<'ctx, 'texture> {
+impl<'texture> Game<'texture> {
     pub fn new(width: u32, height: u32, num_creatures: u32, sdl_ctx: &Sdl) -> Game {
 
         let mut world = World::new(width, height);
@@ -94,7 +94,10 @@ impl<'ctx, 'texture> Game<'ctx, 'texture> {
             active_creatures.len()
         );
 
-        debug_assert_eq!(active_creatures.len() as u32, self.world.get_num_creatures() as u32);
+        debug_assert_eq!(
+            active_creatures.len() as u32,
+            self.world.get_num_creatures() as u32
+        );
 
         if active_creatures.len() == 0 {
             println!("Every creature died at round {}", self.round);

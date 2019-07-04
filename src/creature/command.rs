@@ -43,6 +43,7 @@ impl fmt::Display for Command {
 
 
 impl Command {
+    #[inline(always)]
     pub fn execute(
         &self,
         world: &mut World,
@@ -62,6 +63,7 @@ impl Command {
         }
     }
 
+    #[inline(always)]
     fn c_lookfood(world: &World, stats: &mut CreatureStats) {
         let update_for_dir = |pos_x: u32, pos_y: u32, dir_x: i8, dir_y: i8| -> u8 {
             let (want_x, want_y) = Creature::adjust_pos(world, (pos_x, pos_y), (dir_x, dir_y));
@@ -81,6 +83,7 @@ impl Command {
         stats.s = update_for_dir(x, y, 0, 1);
     }
 
+    #[inline(always)]
     fn c_lookcreatures(world: &World, stats: &mut CreatureStats) {
         let update_for_dir = |pos_x: u32, pos_y: u32, dir_x: i8, dir_y: i8| -> u8 {
             let (want_x, want_y) = Creature::adjust_pos(world, (pos_x, pos_y), (dir_x, dir_y));
@@ -100,6 +103,7 @@ impl Command {
         stats.s = update_for_dir(x, y, 0, 1);
     }
 
+    #[inline(always)]
     fn c_move(world: &mut World, stats: &mut CreatureStats) {
         let dir = stats.get_proba_dir();
 
@@ -113,6 +117,7 @@ impl Command {
         }
     }
 
+    #[inline(always)]
     fn c_eat(world: &mut World, stats: &mut CreatureStats) {
         let dir = stats.get_proba_dir();
 
@@ -134,6 +139,7 @@ impl Command {
         }
     }
 
+    #[inline(always)]
     fn c_attack(world: &mut World, stats: &mut CreatureStats, creatures: &mut CreatureMap) {
         let dir = stats.get_proba_dir();
 
@@ -159,6 +165,7 @@ impl Command {
         }
     }
 
+    #[inline(always)]
     fn c_reproduce(
         world: &mut World,
         stats: &mut CreatureStats,
@@ -201,6 +208,7 @@ impl Command {
         stats.energy -= 100;
     }
 
+    #[inline(always)]
     fn c_invert(stats: &mut CreatureStats) {
         fn invert_stat(v: &mut u8) {
             let ret = (*v as i16) - 255;
