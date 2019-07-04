@@ -115,7 +115,13 @@ impl CreatureMap {
             return None;
         }
 
-        std::mem::replace(&mut self.map[id.get_index()], None)
+        if let Some(c) = &self.map[id.get_index()] {
+            if c.get_id() == id {
+                return std::mem::replace(&mut self.map[id.get_index()], None);
+            }
+        }
+
+        None
     }
 
     pub fn set_creature(&mut self, id: CreatureId, creat: Creature) {
