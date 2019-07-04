@@ -110,6 +110,14 @@ impl CreatureMap {
         }
     }
 
+    pub fn move_creature(&mut self, id: CreatureId) -> Option<Creature> {
+        if id.get_index() >= self.map.len() {
+            return None;
+        }
+
+        std::mem::replace(&mut self.map[id.get_index()], None)
+    }
+
     pub fn set_creature(&mut self, id: CreatureId, creat: Creature) {
         if id.get_index() >= self.map.len() {
             return;
