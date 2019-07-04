@@ -136,6 +136,10 @@ impl Creature {
         self.ctype.clone()
     }
 
+    pub fn get_num_genes(&self) -> usize {
+        self.genes.len()
+    }
+
     pub fn adjust_pos(
         world: &World,
         (pos_x, pos_y): (u32, u32),

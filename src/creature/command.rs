@@ -10,6 +10,7 @@ use rand::Rng;
 use std::fmt;
 
 const NUM_COMMANDS: u32 = 8;
+pub const NUM_MAX_GENES: usize = 16;
 
 #[derive(Clone, FromPrimitive)]
 pub enum Command {
@@ -194,7 +195,7 @@ impl Command {
             let new_command = rand::thread_rng().gen_range(0, NUM_COMMANDS);
 
             let newdiceroll = rand::thread_rng().gen_range(0, 100);
-            if new_genes.len() < 16 && newdiceroll < NEWGENECHANCE {
+            if new_genes.len() < NUM_MAX_GENES && newdiceroll < NEWGENECHANCE {
                 new_genes.push(FromPrimitive::from_u32(new_command).unwrap());
             } else {
                 let selectdiceroll = rand::thread_rng().gen_range(0, new_genes.len());

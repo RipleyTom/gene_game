@@ -5,7 +5,7 @@ mod renderer;
 mod world;
 use creature::command::Command;
 use creaturemap::{CreatureId, CreatureMap};
-use renderer::Renderer;
+use renderer::{DisplayTypes, Renderer};
 use world::World;
 
 use rand::Rng;
@@ -56,8 +56,8 @@ impl<'texture> Game<'texture> {
         self.gfx.init(tex_creat);
     }
 
-    pub fn update_gfx(&mut self) {
-        self.gfx.update(&self.world, &self.creatures);
+    pub fn update_gfx(&mut self, disp: &DisplayTypes) {
+        self.gfx.update(&self.world, &self.creatures, disp);
     }
 
     pub fn display_tile_info(&self, x: i32, y: i32) {
@@ -122,6 +122,7 @@ impl<'texture> Game<'texture> {
 fn main() {
     let sdl_context = sdl2::init().unwrap();
     let tex_creat;
+    let mut display_type = DisplayTypes::FoodType;
 
     let mut event_pump = sdl_context.event_pump().unwrap();
 
@@ -134,7 +135,7 @@ fn main() {
         tex_creat = main_canvas.texture_creator();
 
         g.init(&tex_creat);
-        g.update_gfx();
+        g.update_gfx(&display_type);
 
         let mut paused = false;
 
@@ -143,7 +144,7 @@ fn main() {
                 if !g.simulate() {
                     break 'running;
                 }
-                g.update_gfx();
+                g.update_gfx(&display_type);
             }
 
             for event in event_pump.poll_iter() {
@@ -153,12 +154,12 @@ fn main() {
                         keycode: Some(Keycode::Escape),
                         ..
                     } => break 'running,
-                    Event::KeyDown {
-                        keycode: Some(Keycode::Space),
-                        ..
-                    } => {
-                        paused = !paused;
-                    }
+                    Event::KeyDown { keycode, .. } => match keycode.as_ref().unwrap() {
+                        Keycode::Space => paused = !paused,
+                        Keycode::Kp1 => display_type = DisplayTypes::FoodType,
+                        Keycode::Kp2 => display_type = DisplayTypes::GeneComplexity,
+                        _ => {}
+                    },
                     Event::MouseButtonDown {
                         mouse_btn: MouseButton::Left,
                         x,
