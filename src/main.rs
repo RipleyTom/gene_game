@@ -105,10 +105,9 @@ impl<'texture> Game<'texture> {
         }
 
         for id in &active_creatures {
-            if let Some(c) = self.creatures.move_creature(id.clone()) {
-                let mut creat = c.clone();
-                if creat.simulate(&mut self.world, &mut self.creatures) {
-                    self.creatures.set_creature(creat.get_id(), creat);
+            if let Some(mut c) = self.creatures.move_creature(id.clone()) {
+                if c.simulate(&mut self.world, &mut self.creatures) {
+                    self.creatures.set_creature(c.get_id(), c);
                 }
             }
         }
